@@ -2,23 +2,32 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Consumer } from '../../Context';
 
-import { FaCaretDown } from 'react-icons/fa';
+import { FaCaretDown, FaPencilAlt } from 'react-icons/fa';
 import { TiDeleteOutline } from 'react-icons/ti';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 class Contact extends Component {
   state = {
     showContactInfo: false
   };
 
-  deleteHandler = (id, dispatch) => {
+  deleteHandler = async (id, dispatch) => {
+    await axios.delete(`https://jsonplaceholder.typicode.com/users/${id}`);
+
     dispatch({ type: 'DELETE_CONTACT', payload: id });
   };
+
+  // deleteHandler = (id, dispatch) => {
+  //   axios
+  //     .delete(`https://jsonplaceholder.typicode.com/users/${id}`)
+  //     .then(res => dispatch({ type: 'DELETE_CONTACT', payload: id }));
+  // };
 
   onShowClick = e => {
     this.setState({
       showContactInfo: !this.state.showContactInfo
     });
-    console.log(this.state.showContactInfo);
   };
 
   render() {
@@ -45,6 +54,12 @@ class Contact extends Component {
                     float: 'right'
                   }}
                 >
+                  <Link to={`/contact/edit/${id}`}>
+                    <FaPencilAlt
+                      size={20}
+                      onClick={this.deleteHandler.bind(this, id, dispatch)}
+                    />
+                  </Link>
                   <TiDeleteOutline
                     size={20}
                     onClick={this.deleteHandler.bind(this, id, dispatch)}

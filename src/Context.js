@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 
 const Context = React.createContext();
 
@@ -16,6 +17,21 @@ const reducer = (state, action) => {
         ...state,
         contacts: [...state.contacts, action.payload]
       };
+    case 'UPDATE_CONTACT':
+      return {
+        ...state,
+        contacts: [...state.contacts, action.payload]
+      };
+
+    //Not working Y???
+    // {
+    //   ...state,
+    //   contacts: state.contacts.map(contact =>
+    //     contact.id === action.payload.id
+    //       ? (contact = action.payload)
+    //       : contact
+    //   )
+    // };
     default:
       return state;
   }
@@ -23,28 +39,20 @@ const reducer = (state, action) => {
 
 export class Provider extends Component {
   state = {
-    contacts: [
-      {
-        id: '1',
-        name: 'j',
-        email: 'j@g.com',
-        phone: '5-55-555'
-      },
-      {
-        id: '2',
-        name: 'K',
-        email: 'j@g.com',
-        phone: '5-55-555'
-      },
-      {
-        id: '3',
-        name: 'l',
-        email: 'j@g.com',
-        phone: '5-55-555'
-      }
-    ],
+    contacts: [],
     dispatch: action => this.setState(state => reducer(state, action))
   };
+
+  async componentDidMount() {
+    const res = await axios.get('https://jsonplaceholder.typicode.com/users');
+    this.setState({ contacts: res.data });
+  }
+
+  // componentDidMount() {
+  //   axios
+  //     .get('https://jsonplaceholder.typicode.com/users')
+  //     .then(res => this.setState({ contacts: res.data }));
+  // }
 
   render() {
     return (
